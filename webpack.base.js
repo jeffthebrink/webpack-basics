@@ -11,6 +11,21 @@ module.exports = {
             plugins: ['@babel/plugin-proposal-class-properties']
           }
         }
+      },
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 1,
+              localIdentName: '[name]__[local]',
+              modules: true,
+            },
+          },
+          'postcss-loader'
+        ]
       }
     ]
   }

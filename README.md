@@ -233,3 +233,76 @@ Now we should be able to build our application again via `npm run build` and ref
 page and we should see an h1 tag with the text "Is this thing on?"
 
 If so, congratulations! You've got a real react component loading up in your app.
+
+## Step 4. Add CSS Styling
+
+In this step we're going to get a CSS loader working in babel so we can style our react components.
+We're going to use `PostCSS`, `PreCSS`, and `autoprefixer` to accomplish this.
+
+PostCSS is a CSS framework that takes various plugins to transform an input file into browser
+compatible CSS. PreCSS and autoprefixer are two plugins for PostCSS. PreCSS translates a SASS-like
+CSS syntax into basic CSS. And autoprefixer handles all the vendor-prefixes for us, so we can
+pretend like they don't exist.
+
+1. Add dependencies
+
+We need several new dependencies to get this working:
+
+    npm add --save-dev style-loader css-loader postcss-loader precss autoprefixer
+
+2. Add PostCSS config in the project root named: `postcss.config.js`
+
+    // postcss.config.js
+    module.exports = {
+      plugins: {
+        precss: {},
+        autoprefixer: {}
+      }
+    }
+
+3. Add webpack config rule:
+
+In `webpack.base.js` we need to add a loader rule for css files. After your js rule, add this:
+
+    {
+      test: /\.css$/,
+      use: [
+        'style-loader',
+        {
+          loader: 'css-loader',
+          options: {
+            importLoaders: 1,
+            localIdentName: '[name]__[local]',
+            modules: true,
+          },
+        },
+        'postcss-loader'
+      ]
+    }
+
+4. Add a css file. Add `src/Title.css` add the following CSS:
+
+    .red {
+      color: red;
+    }
+
+5. Now import the css module into your react component. In `src/Title.js` add this import:
+
+    import styles from './Title.css';
+
+And add the class name to our h1 tag. In the render method our return statement should now read:
+
+    return (<h1 className={styles.red}>{text}</h1>);
+
+The `.red` class name in the css file is exposed as a property on the styles object. The value is
+a valid class name that can be set on a React component.
+
+6. Rebuild application and view the results.
+
+At this point we should be able to rebuild our application via `npm run build` and refresh the
+browser and see our title in red.
+
+If so, congratulations! You've got a foundation set up to use CSS in your application.
+
+References:
+- [postcss-loader](https://github.com/postcss/postcss-loader)

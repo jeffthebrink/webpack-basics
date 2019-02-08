@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import styles from './Title.css';
 
 class Title extends React.PureComponent {
   static propTypes = {
@@ -9,7 +10,7 @@ class Title extends React.PureComponent {
   render() {
     const { text } = this.props;
 
-    return (<h1>{text}</h1>);
+    return (<h1 className={styles.red}>{text}</h1>);
   }
 }
 
