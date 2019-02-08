@@ -155,3 +155,81 @@ in it.
 References:
 - [babel](https://babeljs.io/)
 - [babel loader](https://github.com/babel/babel-loader)
+
+## Part 3. Write a React component
+
+In this step we're going to write a separate react component that will be rendered in our app. We
+will need a few new packages and new configuration to get this working.
+
+1. Add some dependencies so we can write a React component
+
+First, we're going to need a new dependency: PropTypes. This is a library that lets dev mode React
+check to make sure you're passing the right kinds of props to your components.
+
+    npm add prop-types
+
+And we need a babel plugin to allow class properties:
+
+    npm add --save-dev @babel/plugin-proposal-class-properties
+
+And we need to update our babel-loader plugins. Next to the `presets` option in the babel-loader
+in `webpack.base.js` add:
+
+    plugins: ['@babel/plugin-proposal-class-properties']
+
+So that your babel-loader rule will look like:
+
+      {
+        test: /.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env', '@babel/preset-react'],
+            plugins: ['@babel/plugin-proposal-class-properties']
+          }
+        }
+      }
+
+This is how we add babel plugins to enable new JavaScript features.
+
+3. Add a Title Component.
+
+Now that we have the libraries and plugins we need, let's add a Title component:
+
+In src add a file called Title.js:
+
+    import React from 'react';
+    import PropTypes from 'prop-types';
+
+    class Title extends React.PureComponent {
+      static propTypes = {
+        text: PropTypes.string.isRequired,
+      };
+
+      render() {
+        const { text } = this.props;
+
+        return (<h1>{text}</h1>);
+      }
+    }
+
+    export {
+      Title,
+    };
+
+And change our ReactDom.render method in `src/index.js` to be:
+
+    ReactDOM.render(
+      (
+        <Title text="Is this thing on?" />
+      ),
+      document.getElementById('root'),
+    );
+
+4. Build and View
+
+Now we should be able to build our application again via `npm run build` and refresh our app.html
+page and we should see an h1 tag with the text "Is this thing on?"
+
+If so, congratulations! You've got a real react component loading up in your app.
