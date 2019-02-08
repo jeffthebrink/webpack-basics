@@ -234,7 +234,7 @@ page and we should see an h1 tag with the text "Is this thing on?"
 
 If so, congratulations! You've got a real react component loading up in your app.
 
-## Step 4. Add CSS Styling
+## Part 4. Add CSS Styling
 
 In this step we're going to get a CSS loader working in babel so we can style our react components.
 We're going to use `PostCSS`, `PreCSS`, and `autoprefixer` to accomplish this.
@@ -306,3 +306,90 @@ If so, congratulations! You've got a foundation set up to use CSS in your applic
 
 References:
 - [postcss-loader](https://github.com/postcss/postcss-loader)
+
+## Part 5 - Code Splitting
+
+Code splitting is a complex topic that can't be covered easily in a short tutorial, but it is
+something that is supported by webpack and is useful to know the basics of.
+
+In essence, if you set your code up right webpack will chunk your code into multiple files that will
+be loaded on demand rather than all at once in one huge bundle. This makes initial code loading
+faster and allows the client to not download and execute code they don't need, until they need it.
+
+To enable code splitting we're going to use a library called `react-async-component`:
+
+1. Add a babel plugin that allows lazy importing:
+
+    npm add --save-dev @babel/plugin-syntax-dynamic-import
+
+2. Add plugin to babel config in web:
+
+In `webpack.base.js` in the babel plugins array, add '@babel/plugin-syntax-dynamic-import' at the
+end. it should now look like this:
+
+
+    plugins: ['@babel/plugin-proposal-class-properties', '@babel/plugin-syntax-dynamic-import']
+
+3. Configure webpack for chunk splitting
+
+In `webpack.base.js` add an output configuration block above module like this:
+
+    output: {
+      path: __dirname + '/dist',
+      chunkFilename: 'chunk-[id].js',
+      publicPath: __dirname + '/dist/',
+    }
+
+This will make chunking work properly
+
+4. Add the async component library:
+
+    npm add react-async-component
+
+5. Write an async component:
+
+At `src/AsyncTitle.js` add the following:
+
+    import { asyncComponent } from 'react-async-component';
+
+    const AsyncTitle = asyncComponent({
+      resolve: () => import('./Title').then(module => module.Title),
+    });
+
+    export {
+      AsyncTitle,
+    }
+
+The `import` function call tells JavaScript to load that file from the server if it isn't already
+loaded. The asyncComponent function creates a new React component that will cache whether or not
+it has loaded its dependency.
+
+6. Use the AsyncTitle in `src/index.js`
+
+Now in `src/index.js` change out the Title component for the AsyncTitle component. Change the import
+Title line from:
+
+    import { Title } from './Title';
+
+To:
+
+    import { AsyncTitle as Title } from './AsyncTitle';
+
+This will pull in our async component and rename it to Title so we don't have to change out the
+remainder of our code.
+
+7. Rebuild and reload the app.
+
+Now if you rebuild the app you will see that not only is there a `dist/main.js` but also some code
+chunks such as `chunk-0.js` and `chunk-1.js`.
+
+Now if you reload the application it should still look the same with a red h1 tag, however if you
+look at the network tab you'll see that not only is main.js loaded but so are the chunks,
+separately. If we had not immediately displayed the AsyncTitle component then the loading of the
+chunks would have waited until we rendered the Title, and then it would have been loaded on demand.
+
+Congratulations! You now should know enough of the basics of webpack to bootstrap your own
+application with react, styling and code chunking!
+
+References:
+- [react-async-component](https://github.com/ctrlplusb/react-async-component)

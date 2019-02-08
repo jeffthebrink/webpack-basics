@@ -1,4 +1,9 @@
 module.exports = {
+  output: {
+    path: __dirname + '/dist',
+    chunkFilename: 'chunk-[id].js',
+    publicPath: __dirname + '/dist/',
+  },
   module: {
     rules: [
       {
@@ -8,7 +13,7 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: ['@babel/preset-env', '@babel/preset-react'],
-            plugins: ['@babel/plugin-proposal-class-properties']
+            plugins: ['@babel/plugin-proposal-class-properties', '@babel/plugin-syntax-dynamic-import']
           }
         }
       },

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import { Title } from './Title';
+import { AsyncTitle as Title } from './AsyncTitle';
 
 ReactDOM.render(
   (
