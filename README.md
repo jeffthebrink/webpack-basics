@@ -220,6 +220,8 @@ In src add a file called Title.js:
 
 And change our ReactDom.render method in `src/index.js` to be:
 
+    import { Title } from './Title';
+
     ReactDOM.render(
       (
         <Title text="Is this thing on?" />
