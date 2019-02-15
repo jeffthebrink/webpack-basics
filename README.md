@@ -76,7 +76,7 @@ root create a file called `webpack.base.js` and put the following code in it:
       module: {
         rules: [
           {
-            test: /.js$/,
+            test: /\.js$/,
             exclude: /node_modules/,
             use: {
               loader: 'babel-loader',
